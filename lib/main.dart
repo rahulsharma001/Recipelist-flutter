@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
   TextEditingController imgUrl = new TextEditingController();
 
   Future<List> submitRecipe() async {
-    final response = await http.post('http://192.168.1.44/api/submitRecipe',
+    final response = await http.post('http://192.168.0.100/api/submitRecipe',
         body: {'title': title.text, 'description': description.text});
     respond = json.decode(response.body);
     print(respond);
@@ -85,8 +85,16 @@ class _MyAppState extends State<MyApp> {
                       ),
                       maxLines: 5,
                     ),
-                   
-                    Image.asset('assets/logo.png'),
+                    SizedBox(height: 10.0),
+                    GestureDetector(
+                      onTap: (){
+                        print('gesture recorderd !!!');
+                      },
+                      child: Container(
+                        child: Image.asset('assets/logo.png',
+                            height: 30.0, width: 30.0),
+                      ),
+                    ),
                     // TextFormField(
                     //   controller:imgUrl,
                     //   decoration:InputDecoration(
