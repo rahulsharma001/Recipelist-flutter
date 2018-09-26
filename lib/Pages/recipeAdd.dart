@@ -8,6 +8,7 @@ import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import '../main.dart';
 
 class MyApp extends StatefulWidget {
   @override
@@ -172,10 +173,16 @@ class _MyAppState extends State<MyApp> {
                         print('gesture recorderd !!!');
                       },
                       child: Container(
+                        margin: EdgeInsets.symmetric(vertical: 50.0),
                         child: _image == null
                             ? Image.asset('assets/logo.png',
                                 height: 80.0, width: 80.0)
-                            : Image.file(_image, height: 80.0, width: 0.0),
+                            : Image.file(
+                                _image,
+                                height: 120.0,
+                                width: 120.0,
+                                fit: BoxFit.contain,
+                              ),
                       ),
                     ),
                     // TextFormField(
@@ -188,15 +195,21 @@ class _MyAppState extends State<MyApp> {
                       height: 10.0,
                     ),
 
-                    RaisedButton(
-                      child: Text('Submit'),
-                      color: Colors.white,
-                      elevation: 4.0,
-                      onPressed: () {
-                        _uploadData();
-                        print('Onpressed clicked');
-                      },
-                    )
+                    // RaisedButton(
+                    //   child: Text('Submit'),
+                    //   color: Colors.white,
+                    //   elevation: 4.0,
+                    //   onPressed: () {
+                    //     _uploadData();
+                    //     print('Onpressed clicked');
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (BuildContext context) => HomePage(),
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
                   ],
                 ),
               ),
@@ -225,6 +238,22 @@ class _MyAppState extends State<MyApp> {
               Navigator.pop(context);
             },
             icon: Icon(Icons.arrow_back),
+          ),
+        ),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.all(5.0),
+          child: RaisedButton(
+            child: Text('Submit'),
+            onPressed: () {
+              _uploadData();
+              print('Onpressed clicked');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => HomePage(),
+                ),
+              );
+            },
           ),
         ),
         body: buildv(),
