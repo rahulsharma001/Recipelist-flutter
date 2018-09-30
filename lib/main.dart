@@ -79,6 +79,38 @@ class _HomePageState extends State<HomePage> {
             appBar: AppBar(
               title: Text('Recipe List'),
             ),
+            drawer: Drawer(
+              child: ListView(
+                children: <Widget>[
+                  DrawerHeader(
+                    child: Center(
+                      child: Text(
+                        'This Is Drawer Header',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.fastfood,
+                      color: Colors.red,
+                    ),
+                    title: Text('Add Recipes'),
+                    onTap: () {
+                      Navigator.pushNamed(context,'/second');
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.settings, color: Colors.red),
+                    title: Text('Settings'),
+                    onTap: () {},
+                  ),
+                ],
+              ),
+            ),
             body: FutureBuilder(
               future: _fetchData(),
               builder: (context, snapshot) {

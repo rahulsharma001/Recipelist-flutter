@@ -194,22 +194,6 @@ class RecipeAddState extends State<RecipeAdd> {
                     SizedBox(
                       height: 10.0,
                     ),
-
-                    // RaisedButton(
-                    //   child: Text('Submit'),
-                    //   color: Colors.white,
-                    //   elevation: 4.0,
-                    //   onPressed: () {
-                    //     _uploadData();
-                    //     print('Onpressed clicked');
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (BuildContext context) => HomePage(),
-                    //       ),
-                    //     );
-                    //   },
-                    // ),
                   ],
                 ),
               ),
@@ -223,6 +207,28 @@ class RecipeAddState extends State<RecipeAdd> {
     // TODO: implement build
     return MaterialApp(
       home: Scaffold(
+        drawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              DrawerHeader(
+                child:Text('data'),
+                decoration:BoxDecoration(
+                  color:Colors.blue,
+                )
+              ),
+              ListTile(
+                title:Text('All Products'),
+                leading:Icon(Icons.details),
+                onTap: ()=>Navigator.pop(context),
+              ),
+              ListTile(
+                title:Text('Settings'),
+                leading:Icon(Icons.settings),
+                onTap:(){},
+              ),
+            ],
+          ),
+        ),
         key: _scaffoldKey,
         floatingActionButton: FloatingActionButton(
           elevation: 5.0,
