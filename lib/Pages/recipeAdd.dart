@@ -10,15 +10,15 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import '../main.dart';
 
-class MyApp extends StatefulWidget {
+class RecipeAdd extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return _MyAppState();
+    return RecipeAddState();
   }
 }
 
-class _MyAppState extends State<MyApp> {
+class RecipeAddState extends State<RecipeAdd> {
   var respond;
   String message = '';
   File _image;

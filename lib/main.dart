@@ -7,7 +7,20 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 void main() {
-  runApp(HomePage());
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return MaterialApp(
+      routes: {
+        '/second': (context) => RecipeAdd(),
+      },
+      home: HomePage(),
+    );
+  }
 }
 
 class HomePage extends StatefulWidget {
@@ -23,9 +36,9 @@ class _HomePageState extends State<HomePage> {
   var isLoading = false;
 
   Future<FetchData> _fetchData() async {
-    setState(() {
-      isLoading = true;
-    });
+    // setState(() {
+    //   isLoading = true;
+    // });
 
     final response =
         await http.get("http://api.webforeveryone.tech/api/submitRecipe");
@@ -35,58 +48,48 @@ class _HomePageState extends State<HomePage> {
       list = (json.decode(response.body) as List)
           .map((data) => new FetchData.fromJson(data))
           .toList();
-      setState(() {
-        isLoading = false;
-      });
+      // setState(() {
+      //   isLoading = false;
+      // });
     } else {
       throw Exception('Failed to load photos');
     }
+    print(json.decode(response.body));
   }
+
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   this._fetchData();
+  // }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return MaterialApp(
-      routes: {
-        '/second': (context) => MyApp(),
-      },
-      home: Builder(
-        builder: (context) => Scaffold(
-              floatingActionButton: FloatingActionButton(
-                elevation: 5.0,
-                child: Icon(Icons.add),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/second');
-                },
-              ),
-              appBar: AppBar(
-                title: Text('Recipe List'),
-              ),
-              bottomNavigationBar: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: new Text("Fetch Data"),
-                  onPressed: _fetchData,
-                ),
-              ),
-              body: isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : ListView.builder(
+    return Builder(
+      builder: (BuildContext context) => Scaffold(
+            floatingActionButton: FloatingActionButton(
+              elevation: 5.0,
+              child: Icon(Icons.add),
+              onPressed: () {
+                Navigator.pushNamed(context, '/second');
+              },
+            ),
+            appBar: AppBar(
+              title: Text('Recipe List'),
+            ),
+            body: FutureBuilder(
+              future: _fetchData(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return Center(child: CircularProgressIndicator());
+                  default:
+                    return ListView.builder(
                       itemCount: list.length,
                       itemBuilder: (BuildContext context, int index) {
-                        // return ListTile(
-                        //   contentPadding: EdgeInsets.all(10.0),
-                        //   title: new Text(list[index].title),
-                        //   trailing: new Image.network(
-                        //     list[index].imageUrl,
-                        //     fit: BoxFit.cover,
-                        //     height: 40.0,
-                        //     width: 40.0,
-                        //   ),
-                        // );
-
                         return Container(
                           padding: EdgeInsets.all(10.0),
                           child: Card(
@@ -106,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                                   title: Text(list[index].title),
                                   subtitle: Text(list[index].description),
                                   trailing: GestureDetector(
-                                    onTap:(){
+                                    onTap: () {
                                       print('edit clicked');
                                     },
                                     child: Container(
@@ -119,9 +122,16 @@ class _HomePageState extends State<HomePage> {
                           ),
                         );
                       },
-                    ),
+                    );
+                }
+              },
             ),
-      ),
+          ),
     );
+  }
+
+  _fetchDatas() async {
+    await Future.delayed(Duration(seconds: 2));
+    return 'REMOTE DATAs';
   }
 }
