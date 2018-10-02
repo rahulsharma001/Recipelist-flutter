@@ -15,6 +15,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return MaterialApp(
+      theme: ThemeData(
+        primaryColor: Colors.blue,
+        accentColor: Colors.purpleAccent,
+        buttonColor: Colors.blue,
+      ),
       routes: {
         '/second': (context) => RecipeAdd(),
       },
@@ -100,13 +105,16 @@ class _HomePageState extends State<HomePage> {
                     ),
                     title: Text('Add Recipes'),
                     onTap: () {
+                      Navigator.pop(context);
                       Navigator.pushNamed(context,'/second');
                     },
                   ),
                   ListTile(
                     leading: Icon(Icons.settings, color: Colors.red),
                     title: Text('Settings'),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                   ),
                 ],
               ),

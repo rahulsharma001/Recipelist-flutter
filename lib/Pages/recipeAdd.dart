@@ -219,12 +219,16 @@ class RecipeAddState extends State<RecipeAdd> {
               ListTile(
                 title:Text('All Products'),
                 leading:Icon(Icons.details),
-                onTap: ()=>Navigator.pop(context),
+                onTap: (){
+                  Navigator.pop(context);
+                },
               ),
               ListTile(
                 title:Text('Settings'),
                 leading:Icon(Icons.settings),
-                onTap:(){},
+                onTap:(){
+                  Navigator.pop(context);
+                },
               ),
             ],
           ),
@@ -236,19 +240,20 @@ class RecipeAddState extends State<RecipeAdd> {
           onPressed: () {
             print('floating');
           },
-        ),
+        ),  
         appBar: AppBar(
           title: Text('Recipe List'),
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back),
-          ),
+          // leading: IconButton(
+          //   onPressed: () {
+          //     Navigator.pop(context);
+          //   },
+          //   icon: Icon(Icons.arrow_back),
+          // ),
         ),
         bottomNavigationBar: Padding(
           padding: EdgeInsets.all(5.0),
           child: RaisedButton(
+            color: Theme.of(context).primaryColor,
             child: Text('Submit'),
             onPressed: () {
               _uploadData();
