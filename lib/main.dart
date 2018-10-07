@@ -5,6 +5,7 @@ import './Pages/recipeAdd.dart';
 import 'package:RecipeList/FactoryClass/FetchData.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import './Pages/details.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/second': (context) => RecipeAdd(),
+        // 'details':(context) => DetailPage(),
       },
       home: HomePage(),
     );
@@ -38,6 +40,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<FetchData> list = List();
+  Set<FetchData> _saved = new Set<FetchData>();
   var isLoading = false;
 
   Future<FetchData> _fetchData() async {
@@ -68,12 +71,42 @@ class _HomePageState extends State<HomePage> {
   //   super.initState();
   //   this._fetchData();
   // }
+  void _push() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          final Iterable<ListTile> tiles = _saved.map((FetchData data) {
+            return new ListTile(
+title: Text(data.title),
+            );
+      
+          });
+           final List<Widget> divided = ListTile
+          .divideTiles(
+            context: context,
+            tiles: tiles,
+          )
+          .toList();
+
+            return new Scaffold(         // Add 6 lines from here...
+          appBar: new AppBar(
+            title: const Text('Saved Suggestions'),
+          ),
+          body: new ListView(children: divided),
+        );   
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final bool alreadySaved = _saved.contains(list);
+
     // TODO: implement build
     return Builder(
       builder: (BuildContext context) => Scaffold(
+            backgroundColor: Color.fromRGBO(237, 232, 232, 1.0),
             floatingActionButton: FloatingActionButton(
               elevation: 5.0,
               child: Icon(Icons.add),
@@ -83,6 +116,15 @@ class _HomePageState extends State<HomePage> {
             ),
             appBar: AppBar(
               title: Text('Recipe List'),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.favorite),
+                  color: Colors.red,
+                  onPressed: () {
+                    _push;
+                  },
+                ),
+              ],
             ),
             drawer: Drawer(
               child: ListView(
@@ -106,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                     title: Text('Add Recipes'),
                     onTap: () {
                       Navigator.pop(context);
-                      Navigator.pushNamed(context,'/second');
+                      Navigator.pushNamed(context, '/second');
                     },
                   ),
                   ListTile(
@@ -133,10 +175,22 @@ class _HomePageState extends State<HomePage> {
                         return Container(
                           padding: EdgeInsets.all(10.0),
                           child: Card(
+                            elevation: 20.0,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 ListTile(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            DetailPage(
+                                                list[index].title,
+                                                list[index].description,
+                                                list[index].imageUrl),
+                                      ),
+                                    );
+                                  },
                                   contentPadding: EdgeInsets.all(10.0),
                                   leading: ClipRRect(
                                       borderRadius: BorderRadius.circular(50.0),
@@ -150,10 +204,21 @@ class _HomePageState extends State<HomePage> {
                                   subtitle: Text(list[index].description),
                                   trailing: GestureDetector(
                                     onTap: () {
-                                      print('edit clicked');
+                                      setState(() {
+                                        if (alreadySaved)
+                                          _saved.remove(list[index]);
+                                        else
+                                          _saved.add(list[index]);
+                                      });
+                                      print('fav clicked');
                                     },
                                     child: Container(
-                                      child: Icon(Icons.edit),
+                                      child: Icon(
+                                        alreadySaved
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                        color: alreadySaved ? Colors.red : null,
+                                      ),
                                     ),
                                   ),
                                 ),
