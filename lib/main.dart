@@ -39,6 +39,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Future _list;
   List<FetchData> list = List();
   Set<FetchData> _saved = new Set<FetchData>();
   var isLoading = false;
@@ -65,35 +66,101 @@ class _HomePageState extends State<HomePage> {
     print(json.decode(response.body));
   }
 
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   this._fetchData();
-  // }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // _list = _fetchData();
+  }
+
+  Widget _buildRow(FetchData pair) {
+    final bool alreadySaved = _saved.contains(pair);
+
+    return new ListTile(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) =>
+                DetailPage(pair.title, pair.description, pair.imageUrl),
+          ),
+        );
+      },
+      contentPadding: EdgeInsets.all(10.0),
+      leading: ClipRRect(
+          borderRadius: BorderRadius.circular(50.0),
+          child: Image.network(
+            pair.imageUrl,
+            height: 80.0,
+            width: 80.0,
+            fit: BoxFit.cover,
+          )),
+      title: Text(pair.title),
+      subtitle: Text(pair.description),
+      trailing: GestureDetector(
+        onTap: () {
+          setState(() {
+            if (alreadySaved) {
+              _saved.remove(pair);
+            } else {
+              _saved.add(pair);
+            }
+          });
+        },
+        child: Container(
+          child: Icon(
+            alreadySaved ? Icons.favorite : Icons.favorite_border,
+            color: alreadySaved ? Colors.red : Colors.red
+          ),
+        ),
+      ),
+    );
+  }
+
   void _push() {
     Navigator.of(context).push(
-      MaterialPageRoute(
+      new MaterialPageRoute<void>(
         builder: (BuildContext context) {
-          final Iterable<ListTile> tiles = _saved.map((FetchData data) {
-            return new ListTile(
-title: Text(data.title),
-            );
-      
-          });
-           final List<Widget> divided = ListTile
-          .divideTiles(
+          final Iterable<Container> tiles = _saved.map(
+            (FetchData data) {
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                child: Card(
+                  elevation: 20.0,
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => DetailPage(
+                              data.title, data.description, data.imageUrl),
+                        ),
+                      );
+                    },
+                    contentPadding: EdgeInsets.all(10.0),
+                    leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(50.0),
+                        child: Image.network(
+                          data.imageUrl,
+                          height: 80.0,
+                          width: 80.0,
+                          fit: BoxFit.cover,
+                        )),
+                    title: Text(data.title),
+                    subtitle: Text(data.description),
+                  ),
+                ),
+              );
+            },
+          );
+          final List<Widget> divided = ListTile.divideTiles(
             context: context,
             tiles: tiles,
-          )
-          .toList();
-
-            return new Scaffold(         // Add 6 lines from here...
-          appBar: new AppBar(
-            title: const Text('Saved Suggestions'),
-          ),
-          body: new ListView(children: divided),
-        );   
+          ).toList();
+          return new Scaffold(
+            appBar: new AppBar(
+              title: const Text('Saved Suggestions'),
+            ),
+            body: new ListView(children: divided),
+          );
         },
       ),
     );
@@ -101,8 +168,6 @@ title: Text(data.title),
 
   @override
   Widget build(BuildContext context) {
-    final bool alreadySaved = _saved.contains(list);
-
     // TODO: implement build
     return Builder(
       builder: (BuildContext context) => Scaffold(
@@ -121,7 +186,7 @@ title: Text(data.title),
                   icon: Icon(Icons.favorite),
                   color: Colors.red,
                   onPressed: () {
-                    _push;
+                    _push();
                   },
                 ),
               ],
@@ -131,10 +196,10 @@ title: Text(data.title),
                 children: <Widget>[
                   DrawerHeader(
                     child: Center(
-                      child: Text(
-                        'This Is Drawer Header',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      child:ListView(children: <Widget>[
+                        Image.asset('assets/recipe_256.png',fit: BoxFit.fitHeight,),
+                      ],)
+                     
                     ),
                     decoration: BoxDecoration(
                       color: Colors.blue,
@@ -152,8 +217,22 @@ title: Text(data.title),
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.settings, color: Colors.red),
-                    title: Text('Settings'),
+                    leading: Icon(Icons.info, color: Colors.red),
+                    title: Text('About'),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.contacts,color: Colors.red),
+                    title: Text('Contact Us'),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.exit_to_app, color: Colors.red),
+                    title: Text('Exit'),
                     onTap: () {
                       Navigator.pop(context);
                     },
@@ -178,51 +257,7 @@ title: Text(data.title),
                             elevation: 20.0,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ListTile(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            DetailPage(
-                                                list[index].title,
-                                                list[index].description,
-                                                list[index].imageUrl),
-                                      ),
-                                    );
-                                  },
-                                  contentPadding: EdgeInsets.all(10.0),
-                                  leading: ClipRRect(
-                                      borderRadius: BorderRadius.circular(50.0),
-                                      child: Image.network(
-                                        list[index].imageUrl,
-                                        height: 80.0,
-                                        width: 80.0,
-                                        fit: BoxFit.cover,
-                                      )),
-                                  title: Text(list[index].title),
-                                  subtitle: Text(list[index].description),
-                                  trailing: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        if (alreadySaved)
-                                          _saved.remove(list[index]);
-                                        else
-                                          _saved.add(list[index]);
-                                      });
-                                      print('fav clicked');
-                                    },
-                                    child: Container(
-                                      child: Icon(
-                                        alreadySaved
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                        color: alreadySaved ? Colors.red : null,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              children: <Widget>[_buildRow(list[index])],
                             ),
                           ),
                         );
