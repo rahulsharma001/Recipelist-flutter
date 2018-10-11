@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import './Pages/recipeAdd.dart';
 import 'package:RecipeList/FactoryClass/FetchData.dart';
@@ -235,6 +235,7 @@ class _HomePageState extends State<HomePage> {
                     title: Text('Exit'),
                     onTap: () {
                       Navigator.pop(context);
+                      exit(0);
                     },
                   ),
                 ],
