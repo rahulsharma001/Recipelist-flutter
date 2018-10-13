@@ -6,6 +6,7 @@ import 'package:RecipeList/FactoryClass/FetchData.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import './Pages/details.dart';
+import './Pages/about.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/second': (context) => RecipeAdd(),
+        '/about':(context)=>AboutPage(),
         // 'details':(context) => DetailPage(),
       },
       home: HomePage(),
@@ -221,6 +223,7 @@ class _HomePageState extends State<HomePage> {
                     title: Text('About'),
                     onTap: () {
                       Navigator.pop(context);
+                      Navigator.of(context).pushNamed('/about');
                     },
                   ),
                   ListTile(
