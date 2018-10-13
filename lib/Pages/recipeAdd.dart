@@ -207,32 +207,6 @@ class RecipeAddState extends State<RecipeAdd> {
     // TODO: implement build
     return MaterialApp(
       home: Scaffold(
-        drawer: Drawer(
-          child: ListView(
-            children: <Widget>[
-              DrawerHeader(
-                child:Text('data'),
-                decoration:BoxDecoration(
-                  color:Colors.blue,
-                )
-              ),
-              ListTile(
-                title:Text('All Products'),
-                leading:Icon(Icons.details),
-                onTap: (){
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title:Text('Settings'),
-                leading:Icon(Icons.settings),
-                onTap:(){
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        ),
         key: _scaffoldKey,
         floatingActionButton: FloatingActionButton(
           elevation: 5.0,
@@ -243,12 +217,12 @@ class RecipeAddState extends State<RecipeAdd> {
         ),  
         appBar: AppBar(
           title: Text('Recipe List'),
-          // leading: IconButton(
-          //   onPressed: () {
-          //     Navigator.pop(context);
-          //   },
-          //   icon: Icon(Icons.arrow_back),
-          // ),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back),
+          ),
         ),
         bottomNavigationBar: Padding(
           padding: EdgeInsets.all(5.0),
