@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class AboutPage extends StatelessWidget {
+class ContactPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return CreatePageState();
+  }
+}
+
+class CreatePageState extends State<ContactPage> {
+  _launchURL() async {
+    const url = 'mailto:codingguru007@gmail.com?subject=Help&body=Ask You Doubt here';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text('About Me'),
+        title: Text('Contact Us'),
       ),
       body: Center(
         child: Container(
@@ -24,7 +42,7 @@ class AboutPage extends StatelessWidget {
                       height: 15.0,
                     ),
                     Text(
-                      'About',
+                      'Contact Us',
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 25.0),
                     ),
@@ -35,17 +53,17 @@ class AboutPage extends StatelessWidget {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Text(
-                        'RecipeList App can be used to see the different kinds of recipes from ' +
-                            'different regions. App Users can also share their own recipes which will be added ' +
-                            'back to our server . Users can add their favourite recipe to favourite list and can view' +
-                            ' them later.',
+                      child: GestureDetector(
+                        onTap: _launchURL,
+                        child:Text(
+                        'Email id : abc@gmail.com',
                         style: TextStyle(
+                          color: Colors.blue,
                             fontSize: 15.0,
                             fontWeight: FontWeight.w600,
                             wordSpacing: 4.0),
                         textAlign: TextAlign.center,
-                      ),
+                      ),),
                     ),
                     SizedBox(
                       height: 20.0,

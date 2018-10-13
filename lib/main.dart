@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import './Pages/details.dart';
 import './Pages/about.dart';
+import './Pages/contact.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/second': (context) => RecipeAdd(),
         '/about':(context)=>AboutPage(),
+        '/contact':(context)=>ContactPage(),
         // 'details':(context) => DetailPage(),
       },
       home: HomePage(),
@@ -231,6 +233,7 @@ class _HomePageState extends State<HomePage> {
                     title: Text('Contact Us'),
                     onTap: () {
                       Navigator.pop(context);
+                      Navigator.of(context).pushNamed('/contact');
                     },
                   ),
                   ListTile(
