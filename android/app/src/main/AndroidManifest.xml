@@ -14,8 +14,8 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Recipe List"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Legend Of India(Authentic Indian Cuisine)"
+        android:icon="@drawable/icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

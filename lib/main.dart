@@ -63,39 +63,42 @@ class _HomePageState extends State<HomePage> {
     print(json.decode(response.body));
   }
 
-  _sendComments(String recipe_id,String comments) async{
-    final response=await http.post("http://192.168.0.46/api/submitComment",body:{
-      "recipe_id":"$recipe_id",
-      "comment":"$comments"
-    });
-    if(response.statusCode==200){
+  _sendComments(int recipe_id, String comments) async {
+    final response = await http.post(
+        "http://api.webforeveryone.tech/api/submitComment",
+        body: {"recipe_id": "$recipe_id", "comment": "$comments"});
+    if (response.statusCode == 200) {
       print("comment saved");
-    }else{
+      showSuccessDialog(context);
+    } else {
       print("Failed to upload comment");
     }
   }
-  TextEditingController comment=TextEditingController();
 
-  void showCommentDialog(BuildContext context,int index) {
+  TextEditingController comment = TextEditingController();
+
+  void showCommentDialog(BuildContext context, int index) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
           // title: new Text("Alert Dialog title"),
-          content:
-              new TextFormField(
-                controller: comment,
-                maxLines: 4,
-                decoration: InputDecoration(hintText: "Enter Comment Here"),
-              ),
+          content: new TextFormField(
+            controller: comment,
+            maxLines: 4,
+            decoration: InputDecoration(hintText: "Enter Comment Here"),
+          ),
           actions: <Widget>[
             new FlatButton(
-              child: new Text("Ok",textAlign: TextAlign.center,),
+              child: new Text(
+                "Ok",
+                textAlign: TextAlign.center,
+              ),
               onPressed: () {
-                  _sendComments(index.toString(),comment.text );
-                  Navigator.of(context).pop();
-              
+                _sendComments(index, comment.text);
+                Navigator.of(context).pop();
+                comment.text='';
               },
             ),
           ],
@@ -111,10 +114,34 @@ class _HomePageState extends State<HomePage> {
     // _list = _fetchData();
   }
 
-  Widget _buildRow(FetchData pair,int index) {
+   void showSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          // title: new Text("Alert Dialog title"),
+          content:
+              new Text("Comment Is Successfully Save To Backend !!!"),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Ok"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildRow(FetchData pair, int index) {
     final bool alreadySaved = _saved.contains(pair);
 
-    return new ListTile(
+    return Container(
+      height: 90.0,
+      child: ListTile(
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -124,16 +151,22 @@ class _HomePageState extends State<HomePage> {
           );
         },
         contentPadding: EdgeInsets.all(10.0),
-        leading: ClipRRect(
-            borderRadius: BorderRadius.circular(50.0),
-            child: Image.network(
-              pair.imageUrl,
-              height: 80.0,
-              width: 80.0,
-              fit: BoxFit.cover,
-            )),
+        leading:Container( 
+          margin:EdgeInsets.only(top: 10.0),
+
+        child:ClipRRect(
+          borderRadius: BorderRadius.circular(50.0),
+          child: Image.network(
+            pair.imageUrl,
+            height: 70.0,
+            width: 70.0,
+            fit: BoxFit.cover,
+            matchTextDirection: true,
+            alignment: Alignment.bottomCenter,
+          ),
+        ),),
         title: Text(pair.title),
-        subtitle: Text(pair.description),
+        // subtitle: Text(pair.description),
         trailing: Column(
           children: <Widget>[
             GestureDetector(
@@ -155,11 +188,13 @@ class _HomePageState extends State<HomePage> {
             GestureDetector(
               child: Icon(Icons.comment),
               onTap: () {
-                showCommentDialog(context,index);
+                showCommentDialog(context, pair.id);
               },
             )
           ],
-        ));
+        ),
+      ),
+    );
   }
 
   void _push() {
@@ -309,7 +344,7 @@ class _HomePageState extends State<HomePage> {
                             elevation: 20.0,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[_buildRow(list[index],index)],
+                              children: <Widget>[_buildRow(list[index], index)],
                             ),
                           ),
                         );
