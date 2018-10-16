@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/second': (context) => RecipeAdd(),
-        '/about':(context)=>AboutPage(),
-        '/contact':(context)=>ContactPage(),
+        '/about': (context) => AboutPage(),
+        '/contact': (context) => ContactPage(),
         // 'details':(context) => DetailPage(),
       },
       home: HomePage(),
@@ -49,10 +49,6 @@ class _HomePageState extends State<HomePage> {
   var isLoading = false;
 
   Future<FetchData> _fetchData() async {
-    // setState(() {
-    //   isLoading = true;
-    // });
-
     final response =
         await http.get("http://api.webforeveryone.tech/api/submitRecipe");
     print(response.statusCode);
@@ -61,13 +57,50 @@ class _HomePageState extends State<HomePage> {
       list = (json.decode(response.body) as List)
           .map((data) => new FetchData.fromJson(data))
           .toList();
-      // setState(() {
-      //   isLoading = false;
-      // });
     } else {
       throw Exception('Failed to load photos');
     }
     print(json.decode(response.body));
+  }
+
+  _sendComments(String recipe_id,String comments) async{
+    final response=await http.post("http://192.168.0.46/api/submitComment",body:{
+      "recipe_id":"$recipe_id",
+      "comment":"$comments"
+    });
+    if(response.statusCode==200){
+      print("comment saved");
+    }else{
+      print("Failed to upload comment");
+    }
+  }
+  TextEditingController comment=TextEditingController();
+
+  void showCommentDialog(BuildContext context,int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          // title: new Text("Alert Dialog title"),
+          content:
+              new TextFormField(
+                controller: comment,
+                maxLines: 4,
+                decoration: InputDecoration(hintText: "Enter Comment Here"),
+              ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Ok",textAlign: TextAlign.center,),
+              onPressed: () {
+                  _sendComments(index.toString(),comment.text );
+              
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -77,47 +110,55 @@ class _HomePageState extends State<HomePage> {
     // _list = _fetchData();
   }
 
-  Widget _buildRow(FetchData pair) {
+  Widget _buildRow(FetchData pair,int index) {
     final bool alreadySaved = _saved.contains(pair);
 
     return new ListTile(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (BuildContext context) =>
-                DetailPage(pair.title, pair.description, pair.imageUrl),
-          ),
-        );
-      },
-      contentPadding: EdgeInsets.all(10.0),
-      leading: ClipRRect(
-          borderRadius: BorderRadius.circular(50.0),
-          child: Image.network(
-            pair.imageUrl,
-            height: 80.0,
-            width: 80.0,
-            fit: BoxFit.cover,
-          )),
-      title: Text(pair.title),
-      subtitle: Text(pair.description),
-      trailing: GestureDetector(
         onTap: () {
-          setState(() {
-            if (alreadySaved) {
-              _saved.remove(pair);
-            } else {
-              _saved.add(pair);
-            }
-          });
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  DetailPage(pair.title, pair.description, pair.imageUrl),
+            ),
+          );
         },
-        child: Container(
-          child: Icon(
-            alreadySaved ? Icons.favorite : Icons.favorite_border,
-            color: alreadySaved ? Colors.red : Colors.red
-          ),
-        ),
-      ),
-    );
+        contentPadding: EdgeInsets.all(10.0),
+        leading: ClipRRect(
+            borderRadius: BorderRadius.circular(50.0),
+            child: Image.network(
+              pair.imageUrl,
+              height: 80.0,
+              width: 80.0,
+              fit: BoxFit.cover,
+            )),
+        title: Text(pair.title),
+        subtitle: Text(pair.description),
+        trailing: Column(
+          children: <Widget>[
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  if (alreadySaved) {
+                    _saved.remove(pair);
+                  } else {
+                    _saved.add(pair);
+                  }
+                });
+              },
+              child: Container(
+                child: Icon(
+                    alreadySaved ? Icons.favorite : Icons.favorite_border,
+                    color: alreadySaved ? Colors.red : Colors.red),
+              ),
+            ),
+            GestureDetector(
+              child: Icon(Icons.comment),
+              onTap: () {
+                showCommentDialog(context,index);
+              },
+            )
+          ],
+        ));
   }
 
   void _push() {
@@ -200,11 +241,14 @@ class _HomePageState extends State<HomePage> {
                 children: <Widget>[
                   DrawerHeader(
                     child: Center(
-                      child:ListView(children: <Widget>[
-                        Image.asset('assets/recipe_256.png',fit: BoxFit.fitHeight,),
-                      ],)
-                     
-                    ),
+                        child: ListView(
+                      children: <Widget>[
+                        Image.asset(
+                          'assets/recipe_256.png',
+                          fit: BoxFit.fitHeight,
+                        ),
+                      ],
+                    )),
                     decoration: BoxDecoration(
                       color: Colors.blue,
                     ),
@@ -229,7 +273,7 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.contacts,color: Colors.red),
+                    leading: Icon(Icons.contacts, color: Colors.red),
                     title: Text('Contact Us'),
                     onTap: () {
                       Navigator.pop(context);
@@ -264,7 +308,7 @@ class _HomePageState extends State<HomePage> {
                             elevation: 20.0,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[_buildRow(list[index])],
+                              children: <Widget>[_buildRow(list[index],index)],
                             ),
                           ),
                         );
