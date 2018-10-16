@@ -94,6 +94,7 @@ class _HomePageState extends State<HomePage> {
               child: new Text("Ok",textAlign: TextAlign.center,),
               onPressed: () {
                   _sendComments(index.toString(),comment.text );
+                  Navigator.of(context).pop();
               
               },
             ),
